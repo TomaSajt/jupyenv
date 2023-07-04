@@ -2,3 +2,4 @@
 
 # generated folder of jupyter distribution
 jupyterlab/
+.jupyter/

@@ -37,6 +37,10 @@ let
       name = "test";
     })
 
+    (dyalogKernel {
+      name = "test";
+    })
+
     (iRubyWith {
       name = "test";
     })

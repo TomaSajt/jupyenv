@@ -3,12 +3,12 @@ let
   packageOverrides = selfPythonPackages: pythonPackages: {
 
     notebook = pythonPackages.notebook.overridePythonAttrs (oldAttrs: {
-        postFixup = ''
-          wrapProgram $out/bin/jupyter-notebook --add-flags '--KernelSpecManager.ensure_native_kernel=False'
-        '';
-      } // (prev.lib.optionalAttrs prev.stdenv.isDarwin {
-        doCheck = false;
-      })
+      postFixup = ''
+        wrapProgram $out/bin/jupyter-notebook --add-flags '--KernelSpecManager.ensure_native_kernel=False'
+      '';
+    } // (prev.lib.optionalAttrs prev.stdenv.isDarwin {
+      doCheck = false;
+    })
     );
 
     nbclassic = pythonPackages.nbclassic.overridePythonAttrs (oldAttrs: {
@@ -58,7 +58,7 @@ let
         pythonPackages.traitlets
         selfPythonPackages.notebook
         pythonPackages.tornado
-        ];
+      ];
     };
 
     jupyter_nbextensions_configurator = pythonPackages.buildPythonPackage rec {
@@ -71,7 +71,7 @@ let
       propagatedBuildInputs = [
         selfPythonPackages.jupyter_contrib_core
         pythonPackages.pyyaml
-        ];
+      ];
     };
 
     jupyter_c_kernel = pythonPackages.buildPythonPackage rec {
@@ -86,7 +86,7 @@ let
         description = "Minimalistic C kernel for Jupyter";
         homepage = https://github.com/brendanrius/jupyter-c-kernel/;
         license = licenses.mit;
-        maintainers = [];
+        maintainers = [ ];
       };
     };
   };
@@ -97,7 +97,7 @@ in
   python3 = prev.python3.override (old: {
     packageOverrides =
       prev.lib.composeExtensions
-        (old.packageOverrides or (_: _: {}))
+        (old.packageOverrides or (_: _: { }))
         packageOverrides;
   });
   poetry2nix = prev.poetry2nix.overrideScope' (p2nixfinal: p2nixprev: {

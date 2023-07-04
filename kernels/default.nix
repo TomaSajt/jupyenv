@@ -7,6 +7,7 @@
   iRubyWith = callPackage ./iruby;
   iJuliaWith = callPackage ./ijulia;
   iNixKernel = callPackage ./inix;
+  dyalogKernel = callPackage ./dyalog;
   cKernelWith = callPackage ./ckernel;
   ansibleKernel = callPackage ./ansible-kernel;
   bashKernel = callPackage ./bash-kernel;

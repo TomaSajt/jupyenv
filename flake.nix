@@ -55,6 +55,21 @@
           };
 
         defaultPackage = self.packages."${system}".jupyterEnvironment;
+
+        devShells.default =
+          let
+            jupyter = pkgs.callPackage ./. { };
+
+            jupyterEnvironment =
+              jupyter.jupyterlabWith {
+                kernels = [
+                  (jupyter.kernels.dyalogKernel {
+                    name = "dyalog-kernel";
+                  })
+                ];
+              };
+          in
+          jupyterEnvironment.env;
       })
     ) //
     {

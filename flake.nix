@@ -2,17 +2,15 @@
   description = "declarative and reproducible Jupyter environments - powered by Nix";
 
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
-    flake-compat = {
-      url = "github:/teto/flake-compat/support-packages";
-      flake = false;
-    };
-    nixpkgs.url = "github:nixos/nixpkgs/release-21.11";
-    ihaskell.url = "github:gibiansky/IHaskell";
+    nixpkgs.url = github:nixos/nixpkgs/release-21.11;
+    flake-utils.url = github:numtide/flake-utils;
+    flake-compat.url = github:teto/flake-compat/support-packages;
+    flake-compat.flake = false;
+    ihaskell.url = github:gibiansky/IHaskell;
   };
 
   outputs =
-    inputs@{ self
+    { self
     , nixpkgs
     , ihaskell
     , flake-utils
@@ -21,22 +19,17 @@
     (flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" ]
       (system:
       let
-        pkgs = import nixpkgs
-          {
-            inherit system;
-            allowUnsupportedSystem = true;
-            overlays = nixpkgs.lib.attrValues self.overlays;
-            # [ self.overlays.jupyterWith ];
-          };
-        ihaskellOverlay = ihaskell.packages.${system}.ihaskell-env.ihaskellOverlay;
-
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = nixpkgs.lib.attrValues self.overlays;
+        };
+        defaultJupyterLab = pkgs.jupyterWith.jupyterlabWith {
+          kernels = [ (pkgs.jupyterWith.kernels.dyalogKernel { }) ];
+        };
       in
       {
-
-        packages.default = (pkgs.jupyterlabWith {
-          kernels = [ (pkgs.jupyterWith.kernels.dyalogKernel { name = "dyalog-kernel"; }) ];
-        });
-
+        packages.default = defaultJupyterLab;
+        devShells.default = defaultJupyterLab.env;
       })
     ) //
     {

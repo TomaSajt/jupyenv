@@ -25,11 +25,12 @@ let
 
   kernel = stdenv.mkDerivation {
     name = "dyalog-jupyter-kernel-${name}";
-    src = ./dyalog.png;
     phases = "installPhase";
     installPhase = ''
       mkdir -p $out/kernels/dyalog_${name}
-      cp $src $out/kernels/dyalog_${name}/logo-64x64.png
+      cd $out/kernels/dyalog_${name}
+      cp ${./dyalog.png} logo-64x64.png
+      cp ${dyalog-jupyter-kernel.codeMirrorConfig} $out/kernels/dyalog_${name}/kernel.js
       echo '${builtins.toJSON kernelFile}' > $out/kernels/dyalog_${name}/kernel.json
     '';
   };

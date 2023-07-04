@@ -33,49 +33,16 @@
       in
       {
 
-        packages =
-          let
-            iPython = pkgs.jupyterWith.kernels.iPythonWith {
-              name = "Python-data-env";
-              ignoreCollisions = true;
-            };
+        packages.default = (pkgs.jupyterlabWith {
+          kernels = [ (pkgs.jupyterWith.kernels.dyalogKernel { name = "dyalog-kernel"; }) ];
+        });
 
-            iHaskell = pkgs.jupyterWith.kernels.iHaskellWith {
-              name = "ihaskell-flake";
-              packages = p: with p; [ vector aeson ];
-              extraIHaskellFlags = "--codemirror Haskell"; # for jupyterlab syntax highlighting
-              haskellPackages = pkgs.haskellPackages;
-            };
-
-          in
-          {
-            jupyterEnvironment = pkgs.jupyterWith.jupyterlabWith {
-              kernels = [ iPython iHaskell ];
-            };
-          };
-
-        defaultPackage = self.packages."${system}".jupyterEnvironment;
-
-        devShells.default =
-          let
-            jupyter = pkgs.callPackage ./. { };
-
-            jupyterEnvironment =
-              jupyter.jupyterlabWith {
-                kernels = [
-                  (jupyter.kernels.dyalogKernel {
-                    name = "dyalog-kernel";
-                  })
-                ];
-              };
-          in
-          jupyterEnvironment.env;
       })
     ) //
     {
       overlays = {
         jupyterWith = final: prev: rec {
-          jupyterWith = prev.callPackage ./. { pkgs = final; };
+          jupyterWith = final.callPackage ./. { };
 
           inherit (jupyterWith)
             jupyterlabWith
